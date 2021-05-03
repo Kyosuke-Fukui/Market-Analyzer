@@ -26,7 +26,7 @@
     $pdo = new PDO($dsn,$user,$password,$options);
 
     //パスワード認証
-    $adminpass = $pdo->prepare("SELECT * FROM password")->execute();
+    $adminpass = $pdo->prepare("SELECT pass * FROM password")->execute();
     var_dump($adminpass);
 
     // //最大待ち時間
