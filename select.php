@@ -80,7 +80,7 @@ if($status==false){
   $_SESSION['price']=$price;
 
   if($_POST["strategy"]=="GCDC"){
-  header('location: ./GCDC/main.php');
+  header('location: ./index.php');
   }else{
   header('location: ./Oscillator/main.php');
   }
