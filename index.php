@@ -13,6 +13,7 @@
       <form class="form1" action="upload.php" method="post" enctype="multipart/form-data">
         <fieldset>
           <legend>CSVファイルアップロード</legend>
+            <label>パスワード：<input name="password"/><br></label>
             <input type="file" name="upfile" accept=".csv"/><br>
             <label>テーブル名：
             <?php include('./table.php'); ?>

@@ -13,90 +13,96 @@
 </html>
 
 <?php
-    //最大待ち時間
-    set_time_limit(10000); //単位：秒。ファイルの容量が大きい場合は増やす
+    $db = parse_url($_SERVER['CLEARDB_DATABASE_URL']);
+    $db['dbname'] = ltrim($db['path'], '/');
+    $dsn = "mysql:host={$db['host']};dbname={$db['dbname']};charset=utf8";
+    $user = $db['user'];
+    $password = $db['pass'];
+    $options = array(
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY =>true,
+    );
+    $pdo = new PDO($dsn,$user,$password,$options);
 
-    //ファイル名
-    $file_name = $_FILES["upfile"]["name"];
+    //パスワード認証
+    $adminpass = $pdo->prepare("SELECT * FROM password")->execute();
+    echo $adminpass;
+
+    // //最大待ち時間
+    // set_time_limit(10000); //単位：秒。ファイルの容量が大きい場合は増やす
+
+    // //ファイル名
+    // $file_name = $_FILES["upfile"]["name"];
     
-    //ファイルの仮アップロード先
-    $tmp_path = $_FILES["upfile"]["tmp_name"]; //（例：C:\xampp\tmp\php2816.tmp）
+    // //ファイルの仮アップロード先
+    // $tmp_path = $_FILES["upfile"]["tmp_name"]; //（例：C:\xampp\tmp\php2816.tmp）
     
-    //保存先のパスを設定
-    $upload_path = "C:/xampp/htdocs/data/";
+    // //保存先のパスを設定
+    // $upload_path = "C:/xampp/htdocs/data/";
 
-    //仮アップロード先から保存先にファイルを移動
-    if (is_uploaded_file($tmp_path)) {
-        if (move_uploaded_file($tmp_path,"$upload_path".$file_name)){
-        // ファイルが読出可能になるようにアクセス権限を変更
-            chmod("$upload_path".$file_name, 0644);
-        }
-        else {
-            echo "ファイルの読み取りが出来ませんでした。";
-            exit();
-        }
-    }
+    // //仮アップロード先から保存先にファイルを移動
+    // if (is_uploaded_file($tmp_path)) {
+    //     if (move_uploaded_file($tmp_path,"$upload_path".$file_name)){
+    //     // ファイルが読出可能になるようにアクセス権限を変更
+    //         chmod("$upload_path".$file_name, 0644);
+    //     }
+    //     else {
+    //         echo "ファイルの読み取りが出来ませんでした。";
+    //         exit();
+    //     }
+    // }
 
-    // ファイルの中身を配列で取得
-    //[Date,Timestamp,Open,High,Low,Close,Volume]で1セット（1行目はヘッダー）
-    if(file_get_contents("$upload_path".$file_name)== false || substr($file_name,-4)!==".csv")
-    {
-        echo "CSVファイルが選択されていません";
-    }else
-    {
-        //ファイルを変数に入れる
-        $csv_file = file_get_contents("$upload_path".$file_name);
+    // // ファイルの中身を配列で取得
+    // //[Date,Timestamp,Open,High,Low,Close,Volume]で1セット（1行目はヘッダー）
+    // if(file_get_contents("$upload_path".$file_name)== false || substr($file_name,-4)!==".csv")
+    // {
+    //     echo "CSVファイルが選択されていません";
+    // }else
+    // {
+    //     //ファイルを変数に入れる
+    //     $csv_file = file_get_contents("$upload_path".$file_name);
 
-        //変数を改行毎の配列に変換
-        $aryHoge = explode("\n", $csv_file);
+    //     //変数を改行毎の配列に変換
+    //     $aryHoge = explode("\n", $csv_file);
 
-        $aryCsv = [];
-        foreach($aryHoge as $key => $value){
-            if($key == 0) continue; //1行目が見出しなど、取得したくない場合
-            if(!$value) continue; //空白行が含まれていたら除外
-            $aryCsv[] = explode(",", $value);
-        }
+    //     $aryCsv = [];
+    //     foreach($aryHoge as $key => $value){
+    //         if($key == 0) continue; //1行目が見出しなど、取得したくない場合
+    //         if(!$value) continue; //空白行が含まれていたら除外
+    //         $aryCsv[] = explode(",", $value);
+    //     }
 
-        //配列を整形
-        $dataarr = [[],[]]; 
+    //     //配列を整形
+    //     $dataarr = [[],[]]; 
 
-        foreach($aryCsv as $key => $value){         
-            $dataarr[0][] = substr($aryCsv[$key][0],0,4)."-".substr($aryCsv[$key][0],4,2)."-"
-            .substr($aryCsv[$key][0],-2)." ".$aryCsv[$key][1]; 
-            $dataarr[1][] = (float)$aryCsv[$key][5]; //Close（終値） 
-        }
+    //     foreach($aryCsv as $key => $value){         
+    //         $dataarr[0][] = substr($aryCsv[$key][0],0,4)."-".substr($aryCsv[$key][0],4,2)."-"
+    //         .substr($aryCsv[$key][0],-2)." ".$aryCsv[$key][1]; 
+    //         $dataarr[1][] = (float)$aryCsv[$key][5]; //Close（終値） 
+    //     }
            
-        $table_name=$_POST["table_name"];
+    //     $table_name=$_POST["table_name"];
+    //     $password=$_POST["password"];
 
-        $db = parse_url($_SERVER['CLEARDB_DATABASE_URL']);
-        $db['dbname'] = ltrim($db['path'], '/');
-        $dsn = "mysql:host={$db['host']};dbname={$db['dbname']};charset=utf8";
-        $user = $db['user'];
-        $password = $db['pass'];
-        $options = array(
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::MYSQL_ATTR_USE_BUFFERED_QUERY =>true,
-        );
+        
 
-        //データアップロード
-        try {
-            // DBへ接続
-            $pdo = new PDO($dsn,$user,$password,$options);
-            // SQL作成
-            for ($i = 0; $i < count($dataarr[0]); $i++){
-            $sql = "INSERT INTO ".$table_name." (time, price, indate) VALUES(:time, :price, sysdate())";
-            // SQL実行
-            $stmt = $pdo->prepare($sql);
-            $stmt ->bindValue(':time',$dataarr[0][$i]);
-            $stmt ->bindValue(':price',$dataarr[1][$i]);
-            $stmt->execute();
-            }
-            echo "アップロード完了";
-        } catch(PDOException $e) {
-            exit('データベースに接続できませんでした。'.$e->getMessage()); //MySQLがStartしていない場合等
-        }
-        // 接続を閉じる
-        $pdo = null;   
-    } 
+    //     //データアップロード
+    //     try {
+    //         // SQL作成
+    //         for ($i = 0; $i < count($dataarr[0]); $i++){
+    //         $sql = "INSERT INTO ".$table_name." (time, price, indate) VALUES(:time, :price, sysdate())";
+    //         // SQL実行
+    //         $stmt = $pdo->prepare($sql);
+    //         $stmt ->bindValue(':time',$dataarr[0][$i]);
+    //         $stmt ->bindValue(':price',$dataarr[1][$i]);
+    //         $stmt->execute();
+    //         }
+    //         echo "アップロード完了";
+    //     } catch(PDOException $e) {
+    //         exit('データベースに接続できませんでした。'.$e->getMessage()); //MySQLがStartしていない場合等
+    //     }
+    //     // 接続を閉じる
+    //     $pdo = null;   
+    // } 
     ?>
