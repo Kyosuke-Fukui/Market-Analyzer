@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
-    <link rel="stylesheet" type="text/css" href="../css/style2.css?ver=??">
+    <link rel="stylesheet" type="text/css" href="../css/style.css?ver=??">
     <title>Market Analyzer</title>
   </head>
   <body>
@@ -35,9 +35,8 @@
           </fieldset>
         </div>
         <div id="btnarea">
-          <button onclick="location.href='../GCDC/main.php'">GCDC戦略</button>
+          <button onclick="location.href='../index.php'">GCDC戦略</button>
           <button id="calcPrice" onclick="newwindow()">価格計算</button>
-          <button id="returnbtn" onclick="location.href='../index.php'">ファイルアップロード画面に戻る</button>
         </div>
       </div> 
     </div>

@@ -277,9 +277,3 @@ $("#aboutTrStop").on("click", function () {
       "トレール（Trailing Stop）とは：\n\n決済のための逆指値注文に値幅指定機能を付加したもので、レートの変動に従って、自動的に決済逆指値価格が切り上がる（切り下がる）もの。",
   });
 });
-
-//価格計算ページに遷移
-var window;
-function newwindow() {
-  window = window.open("../calcPrice.html", "", "width=500,height=230");
-}
