@@ -27,7 +27,7 @@
 
     //パスワード認証
     $adminpass = $pdo->prepare("SELECT * FROM password")->execute();
-    echo $adminpass;
+    var_dump($adminpass);
 
     // //最大待ち時間
     // set_time_limit(10000); //単位：秒。ファイルの容量が大きい場合は増やす
